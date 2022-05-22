@@ -10,7 +10,7 @@ Not-Known - 4
 import numpy as np
 import pandas
 # Read CSV with Pandas
-from sklearn import neural_network
+# from sklearn import neural_network
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import confusion_matrix, classification_report
@@ -20,31 +20,18 @@ from sklearn.model_selection import train_test_split, cross_val_score, cross_val
 train_set = pandas.read_csv("datasets/train.csv")
 print(train_set.keys())
 
-# Prepare data / Data Selection and Formatting
-vect_train = CountVectorizer(stop_words='english')  # English -> Included dictionary
-vect_train.fit(train_set.Text)
-bag_train = vect_train.transform(train_set.Text)
-print("bag_of_words: {}".format(repr(bag_train)))
-print("Dense representation of bag_of_words:\n {}".format(bag_train.toarray()))
-print(len(vect_train.get_feature_names()))
+vect_text = CountVectorizer(stop_words='english')  # English -> Included dictionary
+vect_text.fit(train_set.Text)
+vect_tags = CountVectorizer(stop_words='english')
+bag_tags = vect_tags.fit_transform(train_set['Text_Tag'].values.astype(str))   # Even astype(str) would wor
+bag_text = vect_text.transform(train_set.Text)
+# print(type(bag_text))
+bag_text_array = bag_text.toarray()
+bag_tag_array = bag_tags.toarray()
+print(len(bag_tag_array))
+print(len(bag_text_array))
 
-# Vectors to array
-bag_train_array = bag_train.toarray()
+# print(bag_text_array)
+# print(type(bag_text_array))
 
-# Prepare Algorithm
-X_train, X_test, y_train, y_test = train_test_split(bag_train_array, train_set.Labels, random_state=0)
-random_forest = RandomForestClassifier().fit(X_train, y_train)
-
-# Score
-print(cross_val_score(RandomForestClassifier(), bag_train_array, train_set.Labels, cv=10, n_jobs=5))
-
-# Predict
-pred_y = cross_val_predict(random_forest, X_test, y_test, cv=10, n_jobs=5)
-print(np.mean(pred_y == y_test))
-
-# Confusion Matrix
-confusion = confusion_matrix(y_test, pred_y)
-print("Matriz de confusion:\n{}".format(confusion))
-
-# Classification report
-print(classification_report(y_test, pred_y, target_names=['0', '1', '2', '3', '4', '5']))
+# random_forest = RandomForestClassifier().fit(X_train, y_train)
