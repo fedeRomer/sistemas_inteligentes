@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.metrics import precision_score
@@ -11,6 +12,9 @@ from sklearn.metrics import recall_score
 
 print('Leyendo dataset..')
 dataset = pd.read_csv('datasets/FitbitsAndGradesData_Fall2017.csv')
+
+dataset.dropna(inplace = True)
+vect_train = CountVectorizer(stop_words='english')  # English -> Included dictionary
 
 print('\nImprimiendo primeras y ultimas lineas del dataset')
 print(dataset)
@@ -41,7 +45,7 @@ plt.show()
 dataset.drop('Key', inplace=True, axis=1)
 
 # realizo el split entre test y train
-x = dataset.drop('Gender', axis=1)
+x = dataset
 y = dataset.Gender
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
 
